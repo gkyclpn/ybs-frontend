@@ -5,15 +5,24 @@ import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import axios from '../../config/axios';
 
 const PAGE_SIZE = 10;
-
-export default function CountryTable(props) {
+//KANKA SHOWA BASINCA KAC STOCK OLDUGNU GOSTEREK BI DE AXIOS MUHABBETI VAR
+export default function StoreTable(props) {
     const [page, setPage] = useState(1);
     const [records, setRecords] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get("/logistic/country/list")
+            const res = await axios.get("/logistic/store/list")
+            let stores = res.data
+             stores.map(async (store)=>{
+                 const data = {
+                     country_id: store.country_id
+                 }
+                const res1 = await axios.post("/logistic/country/one",data)
+                store.country_name = res1.data.name
+                 console.log(store.country_name)
+            })
             if (res) 
-                setRecords(res.data.slice(0, PAGE_SIZE))
+                setRecords(stores.slice(0, PAGE_SIZE))
         }
         fetchData();
       }, []);
@@ -28,17 +37,10 @@ export default function CountryTable(props) {
         const data = {
             id: id
         }
-        const res = await axios.post("/logistic/country/destroy",data)
+        const res = await axios.post("/logistic/store/destroy",data)
         if (res)
-            window.location.href = "/countries"
+            window.location.href = "/stores"
     }
-
-    const show = (id) => {
-        props.setClickedCountryId(id)
-        props.setModalDistanceShow(true)
-    }
-
-
 
     return (
         <DataTable className='w-full'
@@ -67,26 +69,21 @@ export default function CountryTable(props) {
                 textAlignment: 'center'
             },
             {
-                accessor: 'createdAt',
-                width: 200,
-                // this column has custom cell data rendering
-                render: ({ createdAt }) => (
-                <Text>
-                    {new Date(createdAt).toLocaleString("en-US",{ year: 'numeric', month: 'long', day: 'numeric'})}
-                </Text>
-                ),
+                accessor: 'country_name',
+                title: 'Country Name',
+                textAlignment: 'center'
             },
             {
                 accessor: 'actions',
                 title: <Text mr="xs">Row actions</Text>,
                 textAlignment: 'center',
                 width: 150,
-                render: (country) => (
+                render: (store) => (
                     <Group spacing={4} position="center" noWrap>
-                        <ActionIcon color="green" onClick={() => show(country.id)}>
+                        <ActionIcon color="green">
                             <AiOutlineEye size={16} />
                         </ActionIcon>
-                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(country.id)} }>
+                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(store.id)} }>
                             <AiOutlineDelete size={16} />
                         </ActionIcon>
                     </Group>

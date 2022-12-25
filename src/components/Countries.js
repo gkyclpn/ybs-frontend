@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import CountryCreateModal from "./modals/CountryCreateModal";
 import CountryDistanceModal from "./modals/CountryDistanceModal";
 
-class Home extends Component {
+class Countries extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -55,4 +55,4 @@ class Home extends Component {
   
 }
 
-export default Home;
+export default Countries;

@@ -32,6 +32,8 @@ export default function CountryDistanceTable(props) {
 
     return (
         <DataTable className='w-full'
+            minHeight={180}
+            noRecordsText="No records to show"
             withBorder
             borderRadius="sm"
             withColumnBorders

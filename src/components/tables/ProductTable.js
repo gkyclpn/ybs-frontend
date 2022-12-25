@@ -5,18 +5,27 @@ import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import axios from '../../config/axios';
 
 const PAGE_SIZE = 10;
-
-export default function CountryTable(props) {
+// KANKA BUNUN SHOW VE STOCK SIKINTILI
+export default function StoreProduct(props) {
     const [page, setPage] = useState(1);
     const [records, setRecords] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get("/logistic/country/list")
-            if (res) 
-                setRecords(res.data.slice(0, PAGE_SIZE))
+            const res = await axios.get("/logistic/product/list")
+            let products = res.data
+            products.map(async (product)=>{
+                const data = {
+                    product_id: product.id
+                }
+                const res1 = await axios.post("/logistic/stock/one",data)
+                product.stock = res1.data.stock
+                console.log(product.stock)
+            })
+            if (res)
+                setRecords(products.slice(0, PAGE_SIZE))
         }
         fetchData();
-      }, []);
+    }, []);
 
     useEffect(() => {
         const from = (page - 1) * PAGE_SIZE;
@@ -28,17 +37,10 @@ export default function CountryTable(props) {
         const data = {
             id: id
         }
-        const res = await axios.post("/logistic/country/destroy",data)
+        const res = await axios.post("/logistic/product/destroy",data)
         if (res)
-            window.location.href = "/countries"
+            window.location.href = "/products"
     }
-
-    const show = (id) => {
-        props.setClickedCountryId(id)
-        props.setModalDistanceShow(true)
-    }
-
-
 
     return (
         <DataTable className='w-full'
@@ -67,26 +69,21 @@ export default function CountryTable(props) {
                 textAlignment: 'center'
             },
             {
-                accessor: 'createdAt',
-                width: 200,
-                // this column has custom cell data rendering
-                render: ({ createdAt }) => (
-                <Text>
-                    {new Date(createdAt).toLocaleString("en-US",{ year: 'numeric', month: 'long', day: 'numeric'})}
-                </Text>
-                ),
+                accessor: 'stock',
+                title: 'Stock',
+                textAlignment: 'center'
             },
             {
                 accessor: 'actions',
                 title: <Text mr="xs">Row actions</Text>,
                 textAlignment: 'center',
                 width: 150,
-                render: (country) => (
+                render: (product) => (
                     <Group spacing={4} position="center" noWrap>
-                        <ActionIcon color="green" onClick={() => show(country.id)}>
+                        <ActionIcon color="green">
                             <AiOutlineEye size={16} />
                         </ActionIcon>
-                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(country.id)} }>
+                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(product.id)} }>
                             <AiOutlineDelete size={16} />
                         </ActionIcon>
                     </Group>
