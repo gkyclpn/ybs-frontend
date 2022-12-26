@@ -4,19 +4,32 @@ import StoreTable from "./tables/StoreTable";
 import Button from 'react-bootstrap/Button';
 import ProductCreateModal from "./modals/ProductCreateModal";
 import ProductTable from "./tables/ProductTable";
-
-
+import ProductEditModal from "./modals/ProductEditModal"
+import ProductShowModal from "./modals/ProductShowModal"
 class Products extends Component {
   constructor(props) {
     super(props);
     this.state = {
         modalShow: false,
+        modalProductEdit: false,
+        modalProductShow: false,
     };
     this.setModalShow = this.setModalShow.bind(this)
+    this.setModalProductEdit = this.setModalProductEdit.bind(this)
+    this.setModalProductShow = this.setModalProductShow.bind(this)
   }
 
   setModalShow = (value) => {
     this.setState({modalShow: value})
+  }
+  setModalProductEdit = (value) => { 
+    this.setState({modalProductEdit: value})
+  }
+  setModalProductShow = (value) => { 
+    this.setState({modalProductShow: value})
+  }
+  setClickedProductId = (id) => {
+    this.setState({clickedProductId: id})
   }
 
   render() {
@@ -28,7 +41,7 @@ class Products extends Component {
                 <Button variant="success" className="bg-green-700" onClick={() => this.setModalShow(true)}>Add Product</Button>
             </div>
             <div className="w-full flex items-center justify-center">
-                <ProductTable  />
+                <ProductTable setClickedProductId={this.setClickedProductId} setModalProductEdit={this.setModalProductEdit} setModalProductShow={this.setModalProductShow}  />
             </div>
         </div>
         <div></div>
@@ -36,7 +49,16 @@ class Products extends Component {
             show={this.state.modalShow}
             onHide={() => this.setModalShow(false)}
         />
-
+        <ProductShowModal
+            show={this.state.modalProductShow}
+            onHide={() => this.setModalProductShow(false)}
+            product_id={this.state.clickedProductId}
+        />
+        <ProductEditModal
+            show={this.state.modalProductEdit}
+            onHide={() => this.setModalProductEdit(false)}
+            product_id={this.state.clickedProductId}
+        />
       </div>
     );
   }

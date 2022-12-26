@@ -5,23 +5,40 @@ import { CloseButton } from 'react-bootstrap';
 import { AiOutlineClose } from 'react-icons/ai'
 import axios from '../../config/axios';
 
-
-class ProductCreateModal extends Component {
+class ProductEditModal extends Component {
     constructor(props) {
       super(props);
       this.state = {
-          name: null
+        name: null,
+        product_id: null
       };
     }
-    handleClick = async () => {
-        const data = {
-            name: this.state.name,
-        }
-        const res = await axios.post("/logistic/product/create",data)
-        console.log(res)
-            if (res)
-                window.location.href = "/products"
+
+    componentDidUpdate(prevProps) {
+      if(this.props.product_id !== prevProps.product_id) {
+        this.getProduct();
+      }
+    } 
+  
+    getProduct = async () => {
+      const data = {
+        product_id: this.props.product_id 
+      }
+      const res1 = await axios.post("/logistic/product/one",data)
+      if (res1) 
+        this.setState({name: res1.data.name})
     }
+
+    handleClick = async () => {
+      const data = {
+        id: this.props.product_id,
+        name: this.state.name,
+      }
+      const res1 = await axios.post("/logistic/product/update",data)
+      if (res1) 
+        window.location.reload()
+    }
+
     render() {
         return (
             <Modal
@@ -32,20 +49,20 @@ class ProductCreateModal extends Component {
             >
               <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
-                  Add Product
+                  Edit Product
                 </Modal.Title>
                 <CloseButton className='font-semibold text-xl' onClick={this.props.onHide}>
                   <AiOutlineClose />
                 </CloseButton>
               </Modal.Header>
-              <Modal.Body >
+              <Modal.Body className='flex flex-col gap-y-8'>
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Name</label>
-                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' onChange={(e) => {this.setState({name: e.target.value})}}/>
+                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' defaultValue={this.state.name} onChange={(e) => this.setState({name: e.target.value})}  />
                   </div>
               </Modal.Body>
               <Modal.Footer>
-                <Button id="save-button" className="bg-green-700" variant="success" onClick={() => this.handleClick()}>Add</Button>
+                <Button id="save-button" className="bg-green-700" variant="success" onClick={() => this.handleClick()}>Update</Button>
               </Modal.Footer>
             </Modal>
           );
@@ -53,4 +70,4 @@ class ProductCreateModal extends Component {
     
   }
 
-export default ProductCreateModal
+export default ProductEditModal

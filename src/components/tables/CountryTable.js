@@ -83,7 +83,7 @@ export default function CountryTable(props) {
                 width: 150,
                 render: (country) => (
                     <Group spacing={4} position="center" noWrap>
-                        <ActionIcon color="green" onClick={() => show(country.id)}>
+                        <ActionIcon color="blue" onClick={() => show(country.id)}>
                             <AiOutlineEye size={16} />
                         </ActionIcon>
                         <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(country.id)} }>

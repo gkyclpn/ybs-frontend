@@ -6,26 +6,27 @@ import axios from '../../config/axios';
 
 const PAGE_SIZE = 10;
 // KANKA BUNUN SHOW VE STOCK SIKINTILI
-export default function StoreProduct(props) {
+export default function StockTable(props) {
     const [page, setPage] = useState(1);
     const [records, setRecords] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get("/logistic/product/list")
-            let products = res.data
-            products.map(async (product)=>{
-                const data = {
-                    product_id: product.id
+            const res = await axios.get("/logistic/stock/list")
+            let stocks = res.data
+            await Promise.all(stocks.map(async (stock)=>{
+                let data = {
+                    product_id: stock.product_id
                 }
-                const res1 = await axios.post("/logistic/stock/ones",data)
-                let count = 0
-                res1.data.map((product) => {
-                    count += product.stock
-                })
-                product.stock = count
-            })
+                const res1 = await axios.post("/logistic/product/one",data)
+                stock.product_name = res1.data.name
+                data = {
+                    store_id: stock.store_id
+                }
+                const res2 = await axios.post("/logistic/store/one",data)
+                stock.store_name = res2.data.name
+            }))
             if (res)
-                setRecords(products.slice(0, PAGE_SIZE))
+                setRecords(stocks.slice(0, PAGE_SIZE))
         }
         fetchData();
     }, []);
@@ -40,19 +41,14 @@ export default function StoreProduct(props) {
         const data = {
             id: id
         }
-        const res = await axios.post("/logistic/product/destroy",data)
+        const res = await axios.post("/logistic/stock/destroy",data)
         if (res)
-            window.location.href = "/products"
-    }
-
-    const show = (id) => {
-        props.setClickedProductId(id)
-        props.setModalProductShow(true)
+            window.location.href = "/stocks"
     }
 
     const edit = (id) => {
-        props.setClickedProductId(id)
-        props.setModalProductEdit(true)
+        props.setClickedStockId(id)
+        props.setModalStockEdit(true)
     }
 
     return (
@@ -78,7 +74,13 @@ export default function StoreProduct(props) {
                 width: 75
             },
             { 
-                accessor: 'name',
+                accessor: 'product_name',
+                title: 'Product Name',
+                textAlignment: 'center'
+            },
+            { 
+                accessor: 'store_name',
+                title: 'Store Name',
                 textAlignment: 'center'
             },
             {
@@ -91,15 +93,12 @@ export default function StoreProduct(props) {
                 title: <Text mr="xs">Row actions</Text>,
                 textAlignment: 'center',
                 width: 150,
-                render: (product) => (
+                render: (stock) => (
                     <Group spacing={4} position="center" noWrap>
-                        <ActionIcon color="blue">
-                            <AiOutlineEye size={16} onClick={() => show(product.id)} /> 
-                        </ActionIcon>
-                        <ActionIcon color="yellow" onClick={() =>{edit(product.id)} }>
+                        <ActionIcon color="yellow" onClick={() =>{edit(stock.id)} }>
                             <AiOutlineEdit size={16} /> 
                         </ActionIcon>
-                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(product.id)} }>
+                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(stock.id)} }>
                             <AiOutlineDelete size={16} />
                         </ActionIcon>
                     </Group>

@@ -69,7 +69,7 @@ class CountryCreateModal extends Component {
                   <AiOutlineClose />
                 </CloseButton>
               </Modal.Header>
-              <Modal.Body >
+              <Modal.Body className='flex flex-col gap-y-4'>
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Name</label>
                       <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' onChange={(e) => {this.setState({name: e.target.value})}}/>

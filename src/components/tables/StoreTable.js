@@ -13,14 +13,13 @@ export default function StoreTable(props) {
         const fetchData = async () => {
             const res = await axios.get("/logistic/store/list")
             let stores = res.data
-             stores.map(async (store)=>{
+            await Promise.all(stores.map(async (store)=>{
                  const data = {
                      country_id: store.country_id
                  }
                 const res1 = await axios.post("/logistic/country/one",data)
                 store.country_name = res1.data.name
-                 console.log(store.country_name)
-            })
+            }))
             if (res) 
                 setRecords(stores.slice(0, PAGE_SIZE))
         }
@@ -40,6 +39,16 @@ export default function StoreTable(props) {
         const res = await axios.post("/logistic/store/destroy",data)
         if (res)
             window.location.href = "/stores"
+    }
+
+    const show = (id) => {
+        props.setClickedStoreId(id)
+        props.setModalStoreShow(true)
+    }
+
+    const edit = (id) => {
+        props.setClickedStoreId(id)
+        props.setModalStoreEdit(true)
     }
 
     return (
@@ -80,12 +89,16 @@ export default function StoreTable(props) {
                 width: 150,
                 render: (store) => (
                     <Group spacing={4} position="center" noWrap>
-                        <ActionIcon color="green">
-                            <AiOutlineEye size={16} />
+                        <ActionIcon color="blue">
+                            <AiOutlineEye size={16} onClick={() => show(store.id)} /> 
+                        </ActionIcon>
+                        <ActionIcon color="yellow" onClick={() =>{edit(store.id)} }>
+                            <AiOutlineEdit size={16} /> 
                         </ActionIcon>
                         <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(store.id)} }>
                             <AiOutlineDelete size={16} />
                         </ActionIcon>
+                        
                     </Group>
                 ),
                 },
