@@ -7,6 +7,8 @@ import Products from "./components/Products";
 import Stocks from "./components/Stocks";
 import Customers from "./components/Customers";
 import Orders from "./components/Orders";
+import Transports from "./components/Transports";
+import TransportFees from "./components/TransportFees";
 
 class App extends Component {
   constructor(props) {
@@ -26,6 +28,8 @@ class App extends Component {
               <Route path="/stocks" element={<Stocks />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/orders" element={<Orders />} />
+              <Route path="/transports" element={<Transports />} />
+              <Route path="/transport-fees" element={<TransportFees />} />
             </Routes>
         </BrowserRouter>
     );

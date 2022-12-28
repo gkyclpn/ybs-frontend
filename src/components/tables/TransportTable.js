@@ -4,29 +4,17 @@ import React, { Component, useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import axios from '../../config/axios';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 // KANKA BUNUN SHOW VE STOCK SIKINTILI
-export default function StockTable(props) {
+export default function TransportTable(props) {
     const [page, setPage] = useState(1);
     const [records, setRecords] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get("/logistic/stock/list")
-            let stocks = res.data
-            await Promise.all(stocks.map(async (stock)=>{
-                let data = {
-                    product_id: stock.product_id
-                }
-                const res1 = await axios.post("/logistic/product/one",data)
-                stock.product_name = res1.data.name
-                data = {
-                    store_id: stock.store_id
-                }
-                const res2 = await axios.post("/logistic/store/one",data)
-                stock.store_name = res2.data.name
-            }))
+            const res = await axios.get("/logistic/transport/list")
+            let transports = res.data
             if (res)
-                setRecords(stocks.slice(0, PAGE_SIZE))
+                setRecords(transports.slice(0, PAGE_SIZE))
         }
         fetchData();
     }, []);
@@ -41,14 +29,19 @@ export default function StockTable(props) {
         const data = {
             id: id
         }
-        const res = await axios.post("/logistic/stock/destroy",data)
+        const res = await axios.post("/logistic/transport/destroy",data)
         if (res)
-            window.location.href = "/stocks"
+            window.location.href = "/transports"
+    }
+
+    const show = (id) => {
+        props.setClickedTransportId(id)
+        props.setModalTransportShow(true)
     }
 
     const edit = (id) => {
-        props.setClickedStockId(id)
-        props.setModalStockEdit(true)
+        props.setClickedTransportId(id)
+        props.setModalTransportEdit(true)
     }
 
     return (
@@ -74,18 +67,7 @@ export default function StockTable(props) {
                 width: 75
             },
             { 
-                accessor: 'product_name',
-                title: 'Product Name',
-                textAlignment: 'center'
-            },
-            { 
-                accessor: 'store_name',
-                title: 'Store Name',
-                textAlignment: 'center'
-            },
-            {
-                accessor: 'stock',
-                title: 'Stock',
+                accessor: 'name',
                 textAlignment: 'center'
             },
             {
@@ -93,12 +75,15 @@ export default function StockTable(props) {
                 title: <Text mr="xs">Row actions</Text>,
                 textAlignment: 'center',
                 width: 150,
-                render: (stock) => (
+                render: (transport) => (
                     <Group spacing={4} position="center" noWrap>
-                        <ActionIcon color="yellow" onClick={() =>{edit(stock.id)} }>
+                        <ActionIcon color="blue">
+                            <AiOutlineEye size={16} onClick={() => show(transport.id)} /> 
+                        </ActionIcon>
+                        <ActionIcon color="yellow" onClick={() =>{edit(transport.id)} }>
                             <AiOutlineEdit size={16} /> 
                         </ActionIcon>
-                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(stock.id)} }>
+                        <ActionIcon color="red" onClick={() =>{window.confirm( 'Are you sure?', ) && destroy(transport.id)} }>
                             <AiOutlineDelete size={16} />
                         </ActionIcon>
                     </Group>

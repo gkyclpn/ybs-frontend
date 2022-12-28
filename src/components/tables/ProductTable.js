@@ -13,7 +13,7 @@ export default function StoreProduct(props) {
         const fetchData = async () => {
             const res = await axios.get("/logistic/product/list")
             let products = res.data
-            products.map(async (product)=>{
+            await Promise.all(products.map(async (product)=>{
                 const data = {
                     product_id: product.id
                 }
@@ -23,7 +23,7 @@ export default function StoreProduct(props) {
                     count += product.stock
                 })
                 product.stock = count
-            })
+            }))
             if (res)
                 setRecords(products.slice(0, PAGE_SIZE))
         }

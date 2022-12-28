@@ -22,7 +22,7 @@ class Header extends Component {
             <a href="/products" className={"hover:text-gray-500 " + (this.state.uri === "products" ? "text-gray-200 hover:text-gray-300" : null)}>Products</a>
             <a href="/stocks" className={"hover:text-gray-500 " + (this.state.uri === "stocks" ? "text-gray-200 hover:text-gray-300" : null)}>Stocks</a>
             <a href="/transports" className={"hover:text-gray-500 " + (this.state.uri === "transports" ? "text-gray-200 hover:text-gray-300" : null)}>Transports</a>
-            <a href="/transport-fees" className={"hover:text-gray-500 " + (this.state.uri === "transports" ? "text-gray-200 hover:text-gray-300" : null)}>Transport Fees</a>
+            <a href="/transport-fees" className={"hover:text-gray-500 " + (this.state.uri === "transport-fees" ? "text-gray-200 hover:text-gray-300" : null)}>Transport Fees</a>
             <a href="/customers" className={"hover:text-gray-500 " + (this.state.uri === "customers" ? "text-gray-200 hover:text-gray-300" : null)}>Customers</a>
             <a href="/orders" className={"hover:text-gray-500 " + (this.state.uri === "orders" ? "text-gray-200 hover:text-gray-300" : null)}>Orders</a>
             

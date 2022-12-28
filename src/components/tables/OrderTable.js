@@ -13,7 +13,8 @@ export default function OrderTable(props) {
         const fetchData = async () => {
             const res = await axios.get("/logistic/order/list")
             let orders = res.data
-            orders.map(async (order)=>{
+            console.log(res)
+            await Promise.all(orders.map(async (order)=>{
                 let data = {
                     customer_id: order.customer_id
                 }
@@ -29,7 +30,18 @@ export default function OrderTable(props) {
                 }
                 const res3 = await axios.post("/logistic/product/one",data)
                 order.product_name= res3.data.name
-            })
+                data = {
+                    country_id: order.nearest_country_id
+                }
+                const res4 = await axios.post("/logistic/country/one",data)
+                order.nearest_country_name= res4.data.name
+                data = {
+                    store_id: order.nearest_store_id
+                }
+                const res5 = await axios.post("/logistic/store/one",data)
+                order.nearest_store_name= res5.data.name
+                
+            }))
             if (res)
                 setRecords(orders.slice(0, PAGE_SIZE))
         }
@@ -77,6 +89,16 @@ export default function OrderTable(props) {
             { 
                 accessor: 'country_name',
                 title: 'Country',
+                textAlignment: 'center'
+            },
+            { 
+                accessor: 'nearest_store_name',
+                title: 'Nearest Store Name',
+                textAlignment: 'center'
+            },
+            { 
+                accessor: 'nearest_country_name',
+                title: 'Nearest Country Name',
                 textAlignment: 'center'
             },
             {
