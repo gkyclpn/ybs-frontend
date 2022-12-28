@@ -5,6 +5,8 @@ import Countries from "./components/Countries"
 import Stores from "./components/Stores"
 import Products from "./components/Products";
 import Stocks from "./components/Stocks";
+import Customers from "./components/Customers";
+import Orders from "./components/Orders";
 
 class App extends Component {
   constructor(props) {
@@ -22,6 +24,8 @@ class App extends Component {
               <Route path="/stores" element={<Stores />} />
               <Route path="/products" element={<Products />} />
               <Route path="/stocks" element={<Stocks />} />
+              <Route path="/customers" element={<Customers />} />
+              <Route path="/orders" element={<Orders />} />
             </Routes>
         </BrowserRouter>
     );

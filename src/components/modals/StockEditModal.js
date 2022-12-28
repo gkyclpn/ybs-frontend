@@ -71,7 +71,7 @@ class StockEditModal extends Component {
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Product</label>
                       <select value={this.state.product_id ? this.state.product_id : ""} onChange={(e) => this.onChangeProductId(e)} >
-                          <option value="1" disabled>Select</option>
+                          <option value="-1" disabled>Select</option>
                           {
                               this.props.products.map((product) => {
                                   return(
@@ -86,7 +86,7 @@ class StockEditModal extends Component {
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Store</label>
                       <select value={this.state.store_id ? this.state.store_id : ""} onChange={(e) => this.onChangeStoreId(e)} >
-                          <option value="1" disabled>Select</option>
+                          <option value="-1" disabled>Select</option>
                           {
                               this.props.stores.map((store) => {
                                   return(
@@ -100,7 +100,7 @@ class StockEditModal extends Component {
 
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Stock</label>
-                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' defaultValue={this.state.stock} onChange={(e) => this.setState({stock: e.target.value})}  />
+                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' value={this.state.stock} onChange={(e) => this.setState({stock: e.target.value})}  />
                   </div>
 
                 

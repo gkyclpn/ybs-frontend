@@ -10,7 +10,7 @@ class StoreCreateModal extends Component {
       super(props);
       this.state = {
           countries: [],
-          country_id: 1,
+          country_id: -1,
           name: null
       };
     }
@@ -60,7 +60,7 @@ class StoreCreateModal extends Component {
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Country</label>
                       <select value={this.state.country_id} onChange={this.onChangeCountry} >
-                          <option value="1" disabled>Select</option>
+                          <option value="-1" disabled>Select</option>
                           {
                               this.state.countries.map((country) => {
                                   return(

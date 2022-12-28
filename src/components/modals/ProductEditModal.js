@@ -58,7 +58,7 @@ class ProductEditModal extends Component {
               <Modal.Body className='flex flex-col gap-y-8'>
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Name</label>
-                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' defaultValue={this.state.name} onChange={(e) => this.setState({name: e.target.value})}  />
+                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}  />
                   </div>
               </Modal.Body>
               <Modal.Footer>

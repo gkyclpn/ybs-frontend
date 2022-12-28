@@ -5,46 +5,36 @@ import { CloseButton } from 'react-bootstrap';
 import { AiOutlineClose } from 'react-icons/ai'
 import axios from '../../config/axios';
 
-class StoreEditModal extends Component {
+class CustomerCreateModal extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        countries: [],
-        name: null,
-        country_id: null,
-        store_id: null
+          countries: [],
+          country_id: -1,
+          name: null
       };
     }
-
-    componentDidUpdate(prevProps) {
-      if(this.props.store_id !== prevProps.store_id) {
-        this.getStore();
-      }
-    } 
-  
-    getStore = async () => {
-      const data = {
-        store_id: this.props.store_id 
-      }
-      const res1 = await axios.post("/logistic/store/one",data)
-      if (res1) 
-        this.setState({name: res1.data.name, country_id: res1.data.country_id})
+    componentDidMount = async () => {
+        const res = await axios.get("/logistic/country/list")
+            if (res) 
+                this.setState({countries: res.data})
     }
 
-    onChangeCountry = (e) => {
-      this.setState({country_id:e.target.value});
-    }
 
     handleClick = async () => {
-      const data = {
-        id: this.props.store_id,
-        name: this.state.name,
-        country_id: this.state.country_id 
-      }
-      const res1 = await axios.post("/logistic/store/update",data)
-      if (res1) 
-        window.location.reload()
+        const data = {
+            name: this.state.name,
+            country_id: this.state.country_id
+        }
+        const res = await axios.post("/logistic/customer/create",data)
+        console.log(res)
+            if (res)
+                window.location.href = "/customers"
     }
+    onChangeCountry= (e)=>{
+        this.setState({country_id:e.target.value});
+    }
+
 
     render() {
         return (
@@ -56,7 +46,7 @@ class StoreEditModal extends Component {
             >
               <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
-                  Edit Store
+                  Add Customer
                 </Modal.Title>
                 <CloseButton className='font-semibold text-xl' onClick={this.props.onHide}>
                   <AiOutlineClose />
@@ -65,14 +55,14 @@ class StoreEditModal extends Component {
               <Modal.Body className='flex flex-col gap-y-8'>
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Name</label>
-                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}  />
+                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' onChange={(e) => {this.setState({name: e.target.value})}}/>
                   </div>
                   <div className='text-sm flex flex-col gap-y-2'>
                       <label>Country</label>
-                      <select value={this.state.country_id ? this.state.country_id : ""} onChange={(e) => this.onChangeCountry(e)} >
+                      <select value={this.state.country_id} onChange={this.onChangeCountry} >
                           <option value="-1" disabled>Select</option>
                           {
-                              this.props.countries.map((country) => {
+                              this.state.countries.map((country) => {
                                   return(
                                       <option key={country.id} value={country.id}>{country.name}</option>
                                   )
@@ -85,7 +75,7 @@ class StoreEditModal extends Component {
                 
               </Modal.Body>
               <Modal.Footer>
-                <Button id="save-button" className="bg-green-700" variant="success" onClick={() => this.handleClick()}>Update</Button>
+                <Button id="save-button" className="bg-green-700" variant="success" onClick={() => this.handleClick()}>Add</Button>
               </Modal.Footer>
             </Modal>
           );
@@ -93,4 +83,4 @@ class StoreEditModal extends Component {
     
   }
 
-export default StoreEditModal
+export default CustomerCreateModal

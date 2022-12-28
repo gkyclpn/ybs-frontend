@@ -5,33 +5,43 @@ import { CloseButton } from 'react-bootstrap';
 import { AiOutlineClose } from 'react-icons/ai'
 import axios from '../../config/axios';
 
-class StockCreateModal extends Component {
+class StoreEditModal extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        product_id: null,
-        store_id: null,
-        stock: null
+        countries: [],
+        name: null,
+        country_id: null,
+        customer_id: null
       };
     }
 
-
-    onChangeStoreId = (e) => {
-      this.setState({store_id:e.target.value});
+    componentDidUpdate(prevProps) {
+      if(this.props.customer_id !== prevProps.customer_id) {
+        this.getCustomer();
+      }
+    } 
+  
+    getCustomer = async () => {
+      const data = {
+        customer_id: this.props.customer_id 
+      }
+      const res1 = await axios.post("/logistic/customer/one",data)
+      if (res1) 
+        this.setState({name: res1.data.name, country_id: res1.data.country_id})
     }
 
-    onChangeProductId = (e) => {
-      this.setState({product_id:e.target.value});
+    onChangeCountry = (e) => {
+      this.setState({country_id:e.target.value});
     }
 
     handleClick = async () => {
       const data = {
-        id: this.props.stock_id,
-        product_id: this.state.product_id,
-        store_id: this.state.store_id,
-        stock: this.state.stock
+        id: this.props.customer_id,
+        name: this.state.name,
+        country_id: this.state.country_id 
       }
-      const res1 = await axios.post("/logistic/stock/create",data)
+      const res1 = await axios.post("/logistic/customer/update",data)
       if (res1) 
         window.location.reload()
     }
@@ -46,47 +56,30 @@ class StockCreateModal extends Component {
             >
               <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
-                  Create Stock
+                  Edit Customer
                 </Modal.Title>
                 <CloseButton className='font-semibold text-xl' onClick={this.props.onHide}>
                   <AiOutlineClose />
                 </CloseButton>
               </Modal.Header>
               <Modal.Body className='flex flex-col gap-y-8'>
-                  
                   <div className='text-sm flex flex-col gap-y-2'>
-                      <label>Product</label>
-                      <select defaultValue="-1" onChange={(e) => this.onChangeProductId(e)} >
+                      <label>Name</label>
+                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' value={this.state.name ? this.state.name : ""} onChange={(e) => this.setState({name: e.target.value})}  />
+                  </div>
+                  <div className='text-sm flex flex-col gap-y-2'>
+                      <label>Country</label>
+                      <select value={this.state.country_id ? this.state.country_id : ""} onChange={(e) => this.onChangeCountry(e)} >
                           <option value="-1" disabled>Select</option>
                           {
-                              this.props.products.map((product) => {
+                              this.props.countries.map((country) => {
                                   return(
-                                      <option key={product.id} value={product.id}>{product.name}</option>
+                                      <option key={country.id} value={country.id}>{country.name}</option>
                                   )
                               })
                           }
                       </select>
 
-                  </div>
-
-                  <div className='text-sm flex flex-col gap-y-2'>
-                      <label>Store</label>
-                      <select defaultValue="-1" onChange={(e) => this.onChangeStoreId(e)} >
-                          <option value="-1" disabled>Select</option>
-                          {
-                              this.props.stores.map((store) => {
-                                  return(
-                                      <option key={store.id} value={store.id}>{store.name}</option>
-                                  )
-                              })
-                          }
-                      </select>
-
-                  </div>
-
-                  <div className='text-sm flex flex-col gap-y-2'>
-                      <label>Stock</label>
-                      <input type="text" name="name" className='w-1/2 py-1 px-2 outline-none border rounded-md' onChange={(e) => this.setState({stock: e.target.value})}  />
                   </div>
 
                 
@@ -100,4 +93,4 @@ class StockCreateModal extends Component {
     
   }
 
-export default StockCreateModal
+export default StoreEditModal
